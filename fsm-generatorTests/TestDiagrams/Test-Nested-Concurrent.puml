@@ -1,0 +1,33 @@
+@startuml Nested Concurrent States
+
+[*] --> Active : Start  Initialise
+
+state Active {
+	[*] -r-> YellowOn 
+	YellowOn --> YellowOff : Timeout
+	YellowOn : OnEntry / Yellow LED On
+	YellowOn : OnExit / -
+	YellowOff --> YellowOn : Timeout
+	YellowOff : OnEntry / Yellow LED Off
+	YellowOff : OnExit / -
+--
+	[*] -r-> BuiltinOn
+	BuiltinOn --> BuiltinOff : Timeout
+	BuiltinOn : OnEntry / Builtin LED On
+	BuiltinOn : OnExit / -
+	BuiltinOff --> BuiltinOn : Timeout
+	BuiltinOff : OnEntry / Builtin LED Off
+	BuiltinOff : OnExit / -
+}
+Active : OnEntry / -
+Active : ButtonUp / Change Yellow Timeout
+Active : OnExit / -
+
+Active --> AllOn : LongPress
+AllOn : OnEntry / All LEDs On
+AllOn : OnExit / All LEDs Off
+
+AllOn --> Active : Timeout [3000] /
+
+Active --> Active : ButtonClick / Change Timeout
+@enduml

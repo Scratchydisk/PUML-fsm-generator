@@ -1,0 +1,119 @@
+/* 
+ * {{Namespace}}.h
+ *
+ * Generated from the PUML Diagram
+ * "{{DiagramName}}"
+ *
+ * By the Grotsoft FSM-Generator.
+ * 
+ * 
+ * Header file for the Grotsoft experimental
+ * MCU (ESP32, ESP8266) state engine.
+ */
+
+#pragma once
+
+#include "GS_State.h"
+#include "GS_StateTransition.h"
+#include "GS_Engine.h"
+#include "GS_StateModel.h"
+
+{{#UserEvents}}
+#define {{EventName}} FIRST_USER_EVENT + {{Index}}
+{{/UserEvents}}
+
+namespace {{Namespace}}
+{
+	class SolutionEngine : public GS_Engine
+	{
+	private:
+		uint16_t _idleCount = 0;
+	public:
+		virtual void onIdle() override
+		{
+			if (_idleCount++ % 100000 == 0)
+			{
+				long fh = ESP.getFreeHeap();
+				long fs = ESP.getFreeContStack();
+				TRACE_GS("Free heap: " + String(fh) + " stack: " + String(fs));
+				_idleCount = 0;
+			}
+		}
+	};
+
+	extern SolutionEngine stateEngine;
+
+
+	/******************************************
+	 * State Transitions
+	 ******************************************/
+
+{{#Transitions}}
+	{{#Description}}
+	// {{DescriptionLine}}
+	{{/Description}}
+	class Transition_{{StartStateName}}_{{EndStateName}} : public GS_StateTransition
+	{
+	public:
+		virtual bool allowed() override
+		{
+			TRACE_GS("Transition Allowed: {{StartStateName}} > {{EndStateName}}");
+			return GS_StateTransition::allowed();  
+		}
+		virtual bool execute() override
+		{
+			TRACE_GS("Transition Execution: {{StartStateName}} > {{EndStateName}}");
+			return GS_StateTransition::execute();
+		}
+	};
+
+{{/Transitions}}
+
+	/******************************************
+	* States
+	******************************************/
+
+ {{#States}}
+	{{#Description}}
+	// {{DescriptionLine}}
+	{{/Description}}
+	class State_{{StateName}} : public GS_State
+	{
+	public:
+		{{#OnEntryDescription}}
+		// {{DescriptionLine}}
+		{{/OnEntryDescription}}
+		virtual void onEntry() override
+		{
+			TRACE_GS("OnEntry: {{StateName}}");
+			GS_State::onEntry();
+		}
+		{{#OnExitDescription}}
+		// {{DescriptionLine}}
+		{{/OnExitDescription}}
+		virtual void onExit() override
+		{
+			TRACE_GS("OnExit: {{StateName}}");
+			GS_State::onExit();
+		}
+	};
+
+{{/States}}
+
+	class RuntimeStateModel : public GS_StateModel
+	{
+	public:
+		RuntimeStateModel();
+
+{{#States}}
+		State_{{StateName}} state_{{StateName}};
+{{/States}}
+
+{{#Transitions}}
+		Transition_{{StartStateName}}_{{EndStateName}} transition_{{StartStateName}}_{{EndStateName}};
+{{/Transitions}}
+	};
+
+	
+	extern RuntimeStateModel stateModel;
+}

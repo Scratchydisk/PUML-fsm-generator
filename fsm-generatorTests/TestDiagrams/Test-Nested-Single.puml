@@ -1,0 +1,25 @@
+@startuml Single Nested States
+
+[*] --> Active : Start / Initialise
+
+state Active {
+	[*] -r-> YellowOn 
+	YellowOn --> YellowOff : Timeout
+	YellowOn : OnEntry / Yellow LED On
+	YellowOn : OnExit / 
+	YellowOff --> YellowOn : Timeout
+	YellowOff : OnEntry / Yellow LED Off
+	YellowOff : OnExit / 
+}
+Active : OnEntry / 
+Active : ButtonUp / Change Yellow Timeout
+Active : OnExit / 
+
+Active --> AllOn : LongPress
+AllOn : OnEntry / All LEDs On
+AllOn : OnExit / All LEDs Off
+
+AllOn --> Active : Timeout (3s)
+
+'Active --> Active : ButtonClick / Change Timeout
+@enduml

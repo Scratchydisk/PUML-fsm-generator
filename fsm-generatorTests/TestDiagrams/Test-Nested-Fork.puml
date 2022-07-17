@@ -1,0 +1,51 @@
+@startuml Remote Sensor
+
+title
+This is the title at €120.
+
+Second title line
+
+
+3erd line
+end title
+
+legend
+- Measure temperature every 30 seconds
+- Measures battery level too
+- Send data over ASK transmitter
+end legend
+
+' Sets up everything before main loop
+[*] --> Active : Start / Initialise
+
+state Active {
+
+    state fork_state <<fork>>
+
+    [*] -->  fork_state 
+
+    fork_state --> ReadingTemperature
+    ReadingTemperature : OnEntry / Read Temp, update model
+
+    fork_state --> ReadingBattery
+    ReadingBattery : OnEntry / Read Vcc, update model
+
+    state join_state <<join>>
+
+    ReadingTemperature --> join_state
+    ReadingBattery --> join_state
+
+    join_state --> Reporting
+    Reporting : OnEntry / Transmit model data
+
+    Reporting --> [*]
+}
+
+Active --> Sleeping
+Sleeping : OnEntry / Sleep for 30 seconds
+
+Sleeping --> Active : Wakeup /
+
+
+
+@enduml

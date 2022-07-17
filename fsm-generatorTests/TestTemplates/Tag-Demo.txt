@@ -1,0 +1,63 @@
+Demo template to show all model tags.
+
+Metadata
+========
+
+Diagram Name: {{DiagramName}}
+Namespace   : {{Namespace}}
+Generated On: {{GeneratedOn}}
+
+Model States
+============
+
+{{#States}}
+State Name : {{StateName}}
+Timeout ms : {{Timeout}}
+State Description: 
+    {{#Description}}
+	- {{DescriptionLine}}
+	{{/Description}}
+
+On Entry Action: {{OnEntryAction}}
+On Entry Description:
+    {{#OnEntryDescription}}
+	- {{DescriptionLine}}
+	{{/OnEntryDescription}}
+
+On Exit Action: {{OnExitAction}}
+On Exit Description:
+    {{#OnExitDescription}}
+	- {{DescriptionLine}}
+	{{/OnExitDescription}}
+
+{{/States}}
+
+Model Transitions
+=================
+
+{{#Transitions}}
+Triggered By : {{EventName}}
+From State   : {{StartStateName}}
+To State     : {{EndStateName}}
+Transition Description: 
+    {{#Description}}
+	- {{DescriptionLine}}
+	{{/Description}}
+
+{{/Transitions}}
+
+Events
+======
+
+{{#Events}}
+Event Name : {{EventName}}
+Index      : {{Index}}
+{{/Events}}
+
+User Events
+===========
+
+{{#UserEvents}}
+Event Name : {{EventName}}
+Index      : {{Index}}
+{{/UserEvents}}

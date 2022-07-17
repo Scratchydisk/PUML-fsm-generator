@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fsm-generator", "fsm-generator\fsm-generator.csproj", "{5C814CD6-01E9-46F9-8049-9B2F3FCE7FCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fsm-generatorTests", "fsm-generatorTests\fsm-generatorTests.csproj", "{82E86892-5F8E-4BD2-94F0-D9E6040D93FA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C814CD6-01E9-46F9-8049-9B2F3FCE7FCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C814CD6-01E9-46F9-8049-9B2F3FCE7FCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C814CD6-01E9-46F9-8049-9B2F3FCE7FCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C814CD6-01E9-46F9-8049-9B2F3FCE7FCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82E86892-5F8E-4BD2-94F0-D9E6040D93FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82E86892-5F8E-4BD2-94F0-D9E6040D93FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82E86892-5F8E-4BD2-94F0-D9E6040D93FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82E86892-5F8E-4BD2-94F0-D9E6040D93FA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

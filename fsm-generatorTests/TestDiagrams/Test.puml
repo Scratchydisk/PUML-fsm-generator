@@ -1,0 +1,40 @@
+@startuml BuiltIn Blink State Model
+
+' LedOn state description
+state LedOn
+
+' Initial start state is LedOn
+' This is an automatic transition.
+[*] --> LedOn : Start /
+
+' Description for LedOff state
+state LedOff
+
+' Comment on LedOn to LedOff transition
+LedOn --> LedOff : Timeout [500] /
+' OE Turn LED on for 1/2 second on entry
+LedOn : OnEntry / Turn LED On For 1/2s
+
+' LedOff to LedOn duty cycle is 75%
+LedOff --> LedOn : Timeout [1500] /
+' OE Turn the LED off on state entry
+LedOff : OnEntry / Turn LED Off
+
+' Description of Alarm state
+' Alarm description is 
+' over several lines.
+state Alarm
+
+' Off to Alarm Button press during
+' LedOff triggers alarm
+LedOff --> Alarm : ButtonPressed /
+
+' OE Turn on the LED for 5 seconds
+Alarm : OnEntry / Turn LED on for 5 seconds
+' OnExit - well, just do nothing!
+Alarm : OnExit /
+
+' Alarm to Ledoff transition
+Alarm --> LedOff : Timeout [5000] /
+
+@enduml

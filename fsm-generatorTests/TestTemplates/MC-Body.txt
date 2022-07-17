@@ -1,0 +1,37 @@
+/* 
+ * {{Namespace}}.cpp
+ *
+ * Generated from the PUML Diagram
+ * "{{DiagramName}}"
+ *
+ * By the Grotsoft FSM-Generator
+ * 
+ *
+ * Header file for the Grotsoft experimental
+ * MCU (ESP32, ESP8266) state engine.
+ */
+
+ #include "{{Namespace}}.h"
+
+
+namespace {{Namespace}}
+{
+	RuntimeStateModel::RuntimeStateModel()
+	{
+{{#States}}
+		state_{{StateName}}.name = "{{StateName}}";
+		state_{{StateName}}.timeout = {{Timeout}};
+		addState(&state_{{StateName}});
+
+{{/States}}
+
+{{#Transitions}}
+		transition_{{StartStateName}}_{{EndStateName}}.configure(&state_{{StartStateName}}, &state_{{EndStateName}}, {{EventName}});
+		addTransition(&transition_{{StartStateName}}_{{EndStateName}});
+
+{{/Transitions}}
+	};
+
+	RuntimeStateModel stateModel;
+	SolutionEngine stateEngine;	
+}

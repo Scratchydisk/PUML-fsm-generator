@@ -10,6 +10,18 @@ namespace Fsm_Generator.DataObjects
     /// </summary>
     public class ModelData
     {
+        /// <summary>
+        /// The command line parameters
+        /// </summary>
+        /// <value></value>
+        public ProgramMetadata? Metadata { get; set; }
+
+        /// <summary>
+        /// Section Lambda functions
+        /// </summary>
+        /// <value></value>
+        public StubbleFuncs? F {get;set;}
+
         // Known events that the framework takes care of
         public List<String> SystemEventNames = new List<string>()
             { "EVENT_START", "EVENT_TIMEOUT", "EVENT_ONENTRY", "EVENT_ONEXIT" };
@@ -96,13 +108,13 @@ namespace Fsm_Generator.DataObjects
             EventDto? existingEvent = Events
                 .FirstOrDefault(p => p.EventName == dtoEvent.EventName);
 
-            if(existingEvent == null)
+            if (existingEvent == null)
             {
                 existingEvent = dtoEvent;
                 Events.Add(existingEvent);
 
-                if(!SystemEventNames.Contains(existingEvent.EventName)
-                    && !UserEvents.Any(p=>p.EventName == existingEvent.EventName))
+                if (!SystemEventNames.Contains(existingEvent.EventName)
+                    && !UserEvents.Any(p => p.EventName == existingEvent.EventName))
                 {
                     UserEvents.Add(existingEvent);
                     existingEvent.Index = UserEvents.Count;

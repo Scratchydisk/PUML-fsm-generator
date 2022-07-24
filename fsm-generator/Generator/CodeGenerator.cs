@@ -3,7 +3,11 @@ using Antlr4.Runtime.Tree;
 using Fsm_Generator.Parser;
 using Fsm_Generator.DataObjects;
 using Stubble.Core;
+using Stubble.Core.Exceptions;
 using Stubble.Core.Builders;
+using Stubble.Helpers.Builders;
+using Stubble.Helpers;
+using Stubble.Helpers.Contexts;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -54,9 +58,32 @@ namespace Fsm_Generator.Generator
             }
         }
 
-        public CodeGenerator()
+        public String DiagramFileName
         {
+            get;
+            set;
         }
+
+        public String TemplateFileName
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Command line args, to be merged to _data
+        /// </summary>
+        private ProgramMetadata _metadata;
+
+
+        public CodeGenerator(ProgramMetadata metadata)
+        {
+            _metadata = metadata;
+            DiagramFileName = "";
+            TemplateFileName = "";
+        }
+
+
 
         /// <summary>
         /// Loads and parses a PUML diagram in preparation for 
@@ -81,18 +108,37 @@ namespace Fsm_Generator.Generator
             _data = visitor.Data;
         }
 
-        public String RenderTemplate(String templateFileName)
+        public String RenderTemplate()
         {
+            TemplateFileName = _metadata.TemplateFileName;
             if (_data == null)
             {
                 throw new NullReferenceException("Parser data not ready.  Call LoadPumlDiagram first.");
             }
 
-            StubbleVisitorRenderer renderer = new StubbleBuilder().Build();
+            var helpers = new HelpersBuilder()
+                .Register<string>("ToUpper", (context, arg) =>
+                {
+                    return arg.ToUpperInvariant();
+                });
 
-            using (StreamReader reader = new StreamReader(templateFileName))
+            var renderer = new StubbleBuilder()
+                .Configure(conf => conf.AddHelpers(helpers))
+                .Build();
+
+            _data.Metadata = _metadata;
+            _data.F = new StubbleFuncs();
+
+            try
             {
-                return renderer.Render(reader.ReadToEnd(), _data);
+                using (StreamReader reader = new StreamReader(TemplateFileName))
+                {
+                    return renderer.Render(reader.ReadToEnd(), _data);
+                }
+            }
+            catch (StubbleException se)
+            {
+                return $"Error: {se.Message}";
             }
         }
     }

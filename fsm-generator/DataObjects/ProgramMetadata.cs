@@ -41,6 +41,10 @@ namespace Fsm_Generator.DataObjects
         public String RightFileName;
         public String Namespace;
 
+        public Boolean Quiet;
+
+        public String TemplateFileName;
+
         public String QualifiedGenerateFolder
         {
             get { return Path.GetFullPath(GenerateFolder) + "\\"; }
@@ -63,6 +67,7 @@ namespace Fsm_Generator.DataObjects
 
         public ProgramMetadata(CommandLineArgs args)
         {
+            Quiet = false;
             Merge = true;
             UseDiffMerge = false;
             UseWinMerge = false;
@@ -81,6 +86,7 @@ namespace Fsm_Generator.DataObjects
             BaseFileName = "";
             LeftFileName = "";
             RightFileName = "";
+            TemplateFileName = "";
             Namespace = "Default_Name_Space";
         }
 

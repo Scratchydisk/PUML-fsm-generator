@@ -1,0 +1,29 @@
+@startuml Task_FSM
+
+' The task is available to be worked on
+state Open
+
+' The task has been successfully closed
+state Resolved
+
+' The task has been cancelled without completing
+state Cancelled
+
+' The task is being actively worked on
+' so is really busy
+state InProgress 
+
+[*] --> Open
+
+Open --> Resolved : Resolve /
+
+Open --> Cancelled : Cancel /
+
+Open --> InProgress : Start /
+
+InProgress --> Cancelled : Cancel /
+InProgress --> Resolved : Resolve /
+
+Resolved --> Open : ReOpen /
+
+@enduml

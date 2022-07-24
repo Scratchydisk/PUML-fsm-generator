@@ -22,23 +22,35 @@ namespace Fsm_Generator
     {
         private static ProgramMetadata _metadata = null!;
         private static CommandLineArgs _arguments = null!;
-        private static String? _templateFileName;
 
 
         static void Main(string[] args)
         {
             Environment.ExitCode = (int)ExitCode.Success;
 
-            Console.WriteLine("Grotsoft Finite State Model Generator");
-            Console.WriteLine("www.grotsoft.com\r\n");
-
             _arguments = new CommandLineArgs(args);
             _metadata = new ProgramMetadata(_arguments);
 
-            ProcessArguments();
+            bool valid = ProcessArguments();
+
+            if (!_metadata.Quiet)
+            {
+                Console.WriteLine("Grotsoft Finite State Model Generator");
+                Console.WriteLine("www.grotsoft.com\r\n");
+            }
+
+            if (valid)
+            {
+                ParseAndGenerate();
+            }
         }
 
-        static void ProcessArguments()
+        /// <summary>
+        /// Returns true if there were no errors
+        /// reading the parameters.
+        /// </summary>
+        /// <returns></returns>
+        static bool ProcessArguments()
         {
             bool valid = true;
 
@@ -65,11 +77,15 @@ namespace Fsm_Generator
                 _metadata.StateModelFile = _arguments["s"]!;
             }
 
-            if (_arguments["t"] != null)
+            if (_arguments["q"] != null)
             {
-                _templateFileName = _arguments["t"];
+                _metadata.Quiet = true;
             }
 
+            if (_arguments["t"] != null)
+            {
+                _metadata.TemplateFileName = _arguments["t"] ?? "";
+            }
 
             // if (_arguments["HelpMerge"] != null)
             // {
@@ -100,10 +116,7 @@ namespace Fsm_Generator
                 _metadata.Verbose = true;
             }
 
-            if (valid)
-            {
-                ParseAndGenerate();
-            }
+            return valid;
         }
 
         static String ReadPumlFile(String fileName)
@@ -139,7 +152,7 @@ namespace Fsm_Generator
             }
 
             Verbose("Creating parser");
-            CodeGenerator gen = new CodeGenerator();
+            CodeGenerator gen = new CodeGenerator(_metadata);
 
             Verbose("Parsing model");
             try
@@ -156,13 +169,13 @@ namespace Fsm_Generator
             Verbose("Parse complete.");
 
 
-            if (string.IsNullOrEmpty(_templateFileName))
+            if (string.IsNullOrEmpty(_metadata.TemplateFileName))
             {
                 Console.WriteLine("No merge template specified, exiting.");
                 Environment.Exit((int)ExitCode.Success);
             }
             Verbose("Rendering Template");
-            String outputStr = gen.RenderTemplate(_templateFileName);
+            String outputStr = gen.RenderTemplate();
 
             // TODO: Option for an output file
             Console.WriteLine(outputStr);
@@ -189,7 +202,8 @@ namespace Fsm_Generator
             Console.WriteLine(
                 "\r\nOptions:\r\n"
                 + "\t-h\t\tShow this help\r\n"
-                + "\t-o <file name>\tOutput file\r\n"
+                + "\t-o <file name>\tOutput file, optional\r\n"
+                + "\t-q\t\tQuiet, supresses program info to stdout\r\n"
                 + "\t-s <file name>\tPUML state model to parse (mandatory)\r\n"
                 + "\t-t <file name>\tMerge template file\r\n"
                 + "\t-tags\t\tShow available template tags\r\n"
@@ -199,6 +213,10 @@ namespace Fsm_Generator
                 //+ "\tUseP4 ([true]|false)\tUse P4Merge if internal merge fails.\r\n"
                 //+ "\tP4Path P4Path\tSpecify the path to P4Merge.exe.\r\n"
                 + "\t-v\t\tVerbose output to console\r\n"
+                + "\t\r\n"
+                + "To pipeline generated output to stdout:\r\n"
+                + "\t\r\n"
+                + "\tUse -q option and do not specify an output file\r\n"
                 + "\t\r\n"
                 + "Exit Codes:\r\n"
                 + "\tSuccess = 0\r\n"

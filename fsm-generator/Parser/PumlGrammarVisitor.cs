@@ -60,24 +60,23 @@ namespace Fsm_Generator.Parser
                 EndStateName = context.toState().GetText().Replace("[*]", "End"),
                 StartStateName = context.fromState().GetText().Replace("[*]", "Start")
             };
-            _currentTransition.EventName = "EVENT_";
             _currentTransition.Description.AddRange(_comments);
 
             // Event action is optional
             if (context.eventAction() == null)
             {
                 // The transition fires when the source state's Do loop is done
-                _currentTransition.EventName += "DONE";
+                _currentTransition.EventName = "DONE";
             }
             else
             {
                 if (context.eventAction().@event().EVENT_NAME() != null)
                 {
-                    _currentTransition.EventName += context.eventAction().@event().EVENT_NAME().GetText().ToUpper();
+                    _currentTransition.EventName = context.eventAction().@event().EVENT_NAME().GetText();
                 }
                 if (context.eventAction().@event().EVENT_TIMEOUT() != null)
                 {
-                    _currentTransition.EventName += context.eventAction().@event().EVENT_TIMEOUT().GetText().ToUpper();
+                    _currentTransition.EventName = context.eventAction().@event().EVENT_TIMEOUT().GetText();
                 }
             }
 
@@ -144,7 +143,19 @@ namespace Fsm_Generator.Parser
             {
                 _currentState.OnExitAction = context.ACTION_TEXT()?.GetText();
             }
-
+            else
+            {
+                if (_currentTransition == null)
+                {
+                    // This is an error
+                    throw new ArgumentNullException("Transition is null parsing its Action name");
+                }
+                else
+                {
+                    // So it's an action on a transition
+                    //_currentTransition.`.ActionName = context.ACTION_TEXT()?.GetText();
+                }
+            }
 
             return res;
         }
@@ -161,18 +172,15 @@ namespace Fsm_Generator.Parser
 
         public override Result VisitEvent([NotNull] PumlGrammar.EventContext context)
         {
-            _currentEvent = new EventDto
-            {
-                EventName = "EVENT_"
-            };
+            _currentEvent = new EventDto();
 
             if (context.EVENT_NAME() != null)
             {
-                _currentEvent.EventName += context.EVENT_NAME().GetText().ToUpper();
+                _currentEvent.EventName = context.EVENT_NAME().GetText();
             }
             if (context.EVENT_TIMEOUT() != null)
             {
-                _currentEvent.EventName += context.EVENT_TIMEOUT().GetText().ToUpper();
+                _currentEvent.EventName = context.EVENT_TIMEOUT().GetText();
             }
             Data.AddMergeEvent(_currentEvent);
 

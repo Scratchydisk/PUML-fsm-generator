@@ -9,11 +9,21 @@ namespace Fsm_Generator.DataObjects
     /// </summary>
     public class TransitionDto : BaseDto
     {
-        public String? StartStateName { get; set; }
-        public String? EndStateName { get; set; }
+        public String StartStateName { get; set; }
+        public String EndStateName { get; set; }
 
-        public String? EventName { get; set; }
+        public String EventName { get; set; }
 
-        
+
+        public String? Guard { get; set; }
+
+        public String? Effect { get; set; }
+
+        public TransitionDto()
+        {
+            StartStateName = "";
+            EndStateName = "";
+            EventName = "";
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace Fsm_Generator.DataObjects
         /// Section Lambda functions
         /// </summary>
         /// <value></value>
-        public StubbleFuncs? F {get;set;}
+        public StubbleFuncs? F { get; set; }
 
         // Known events that the framework takes care of
         public List<String> SystemEventNames = new List<string>()
@@ -43,6 +43,27 @@ namespace Fsm_Generator.DataObjects
 
         public List<TransitionDto> Transitions { get; set; }
         public List<StateDto> States { get; set; }
+
+        /// <summary>
+        /// The first state the model starts in.
+        /// i.e. the one Start transitions to.
+        /// NB: This assumes one such initial state.
+        /// </summary>
+        /// <value></value>
+        public StateDto InitialState
+        {
+            get
+            {
+                // Get transition from Start
+                StateDto initialState =
+                    States.First(
+                        s => Transitions.First(
+                                t => t.StartStateName == "Start")
+                                .EndStateName == s.StateName);
+
+                return initialState ?? new StateDto();
+            }
+        }
 
         /// <summary>
         /// All events, including system ones (start, timeout)

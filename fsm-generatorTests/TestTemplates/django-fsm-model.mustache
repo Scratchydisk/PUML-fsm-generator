@@ -19,13 +19,72 @@ Inject Source PUML?
 
 class {{#F.PascalCase}}{{DiagramName}}State{{/F.PascalCase}}(object):
 	"""
-	Constants to represent the states of the PublishableModel
+	Constants to represent the states of any model that implements
+	the {{DiagramName}} process.
 	"""
 	CHOICES = new Choices(
 	{{#States}}
 		("{{#F.Upper}}{{StateName}}{{/F.Upper}}", "{{#F.PascalCase}}{{StateName}}{{/F.PascalCase}}", "{{#Description}}{{DescriptionLine}} {{/Description}}"),
 	{{/States}}
 	)
+
+
+"""
+The following is a boiler plate class that may be used as the
+foundation for any models that implement the {{DiagramName}} 
+process.  Splitting the states, above, allows them to be 
+used in multiple models.
+"""
+
+class {{#F.PascalCase}}{{DiagramName}}Model{{/F.PascalCase}}(models.Model):
+	"""
+	This class implements the {{DiagramName}} django-fsm process.
+	"""
+
+	# Normal model attributes go here
+
+	# The {{DiagramName}} state tracking field
+	{{#F.SnakeCase}}{{DiagramName}}State{{/F.SnakeCase}} = FSMField(
+		default={{#F.PascalCase}}{{DiagramName}}State{{/F.PascalCase}}.{{Upper InitialState.StateName}}
+		verbose_name="{{#F.TitleCase}}{{DiagramName}}State{{/F.TitleCase}}"
+		choices={{#F.PascalCase}}{{DiagramName}}State{{/F.PascalCase}}.CHOICES
+		protected=True
+	)
+
+	#
+	# META class and __str__, etc. methods go here
+	#
+
+	########################################################
+	# Transition Conditions
+	# These must be defined prior to the actual transitions
+	# to be refrenced.
+
+	# TODO: These are the guards on the transitions
+
+	########################################################
+	# Workflow (state) Transitions
+
+
+	{{#Events}}
+	@transition(field={{#F.SnakeCase}}{{DiagramName}}State{{/F.SnakeCase}},
+		source=[
+			{{#SourceStates}}
+			{{#F.PascalCase}}{{DiagramName}}State{{/F.PascalCase}}.{{StateName}},
+			{{/SourceStates}}
+			],
+		target={{#F.PascalCase}}{{DiagramName}}State{{/F.PascalCase}}.{{TargetStateName}},
+		conditions=[NEED GUARDS])
+	def {{#F.SnakeCase}}{{EventName}}{{/F.SnakeCase}}(self):
+		"""
+		{{#TransitionDescriptions}}
+		{{DescriptionLine}}
+		{{/TransitionDescriptions}}
+		"""
+
+	{{/Events}}
+
+
 
 Metadata
 ========
@@ -70,6 +129,9 @@ Model Transitions
 Triggered By : {{EventName}}
 From State   : {{StartStateName}}
 To State     : {{EndStateName}}
+Trigger Name : {{Trigger}}
+Guard Name   : {{Guard}}
+Effect       : {{Effect}}
 Transition Description: 
     {{#Description}}
 	- {{DescriptionLine}}

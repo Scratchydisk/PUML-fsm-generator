@@ -1,4 +1,4 @@
-@startuml Task_FSM
+@startuml Task
 
 ' The task is available to be worked on
 state Open
@@ -13,17 +13,25 @@ state Cancelled
 ' so is really busy
 state InProgress 
 
+' The task has been scheduled
 [*] --> Open
 
+' The task has been resolved
 Open --> Resolved : Resolve /
 
+' The task has been cancelled
 Open --> Cancelled : Cancel /
 
+' The task is now being worked on
 Open --> InProgress : Start /
 
+' The task has been cancelled from in progress
 InProgress --> Cancelled : Cancel /
+
+' The task has been resolved from in progress
 InProgress --> Resolved : Resolve /
 
+' A previously resolved task has been reopened
 Resolved --> Open : ReOpen /
 
 @enduml

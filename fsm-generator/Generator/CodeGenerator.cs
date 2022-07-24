@@ -83,6 +83,38 @@ namespace Fsm_Generator.Generator
             TemplateFileName = "";
         }
 
+        /// <summary>
+        /// Carries out post processing (mapping events/states)
+        /// for the parsed diagram.
+        /// </summary>
+        /// <param name="data"></param>
+        private void PostProcess(ModelData data)
+        {
+            // Get all the source states for each event
+            foreach (EventDto e in data.Events)
+            {
+                e.SourceStates = data.States.Where(
+                    s => data.Transitions.Where(
+                        t => t.EventName == e.EventName
+                    ).Select(t => t.StartStateName)
+                    .Contains(s.StateName)
+                )
+                .ToList();
+
+                e.TargetState = data.States.Where(
+                    s => data.Transitions.Where(
+                        t => t.EventName == e.EventName
+                    ).Select(t => t.EndStateName)
+                    .Contains(s.StateName)
+                )
+                .First();
+
+                e.TransitionDescriptions = data.Transitions
+                .Where(t => t.EventName == e.EventName)
+                .SelectMany(t => t.Description)
+                .ToList();
+            }
+        }
 
 
         /// <summary>
@@ -106,6 +138,8 @@ namespace Fsm_Generator.Generator
             PumlGrammarVisitor<String> visitor = new Fsm_Generator.Parser.PumlGrammarVisitor<String>();
             string result = visitor.Visit(parseTree);
             _data = visitor.Data;
+
+            PostProcess(_data);
         }
 
         public String RenderTemplate()
@@ -117,7 +151,7 @@ namespace Fsm_Generator.Generator
             }
 
             var helpers = new HelpersBuilder()
-                .Register<string>("ToUpper", (context, arg) =>
+                .Register<string>("Upper", (context, arg) =>
                 {
                     return arg.ToUpperInvariant();
                 });

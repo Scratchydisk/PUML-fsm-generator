@@ -85,7 +85,21 @@ namespace Fsm_Generator
                 else
                     return char.ToLowerInvariant(cCase[0]) + cCase.Substring(1);
             });
-
+            
+        /// <summary>
+        /// Converts the tag section contents to snake case.
+        /// E.g. InProgress => in_progress
+        /// </summary>
+        /// <returns></returns>    
+        public Func<string, Func<string, string>, object> SnakeCase =
+            new Func<string, Func<string, string>, object>((str, render) =>
+            {
+                // Convert to TitleCase using separator "_" and 
+                // concert to lowercase.
+                String rendered = render(str) ?? "";
+                rendered = (String)TitleCaseText(rendered, "_");
+                return rendered.ToLowerInvariant();
+            });
 
         #endregion
 

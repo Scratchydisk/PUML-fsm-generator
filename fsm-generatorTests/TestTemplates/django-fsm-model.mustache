@@ -45,9 +45,9 @@ class {{#F.PascalCase}}{{DiagramName}}Model{{/F.PascalCase}}(models.Model):
 
 	# The {{DiagramName}} state tracking field
 	{{#F.SnakeCase}}{{DiagramName}}State{{/F.SnakeCase}} = FSMField(
-		default={{#F.PascalCase}}{{DiagramName}}State{{/F.PascalCase}}.{{Upper InitialState.StateName}}
-		verbose_name="{{#F.TitleCase}}{{DiagramName}}State{{/F.TitleCase}}"
-		choices={{#F.PascalCase}}{{DiagramName}}State{{/F.PascalCase}}.CHOICES
+		default={{#F.PascalCase}}{{DiagramName}}State{{/F.PascalCase}}.{{Upper InitialState.StateName}},
+		verbose_name="{{#F.TitleCase}}{{DiagramName}}State{{/F.TitleCase}}",
+		choices={{#F.PascalCase}}{{DiagramName}}State{{/F.PascalCase}}.CHOICES,
 		protected=True
 	)
 
